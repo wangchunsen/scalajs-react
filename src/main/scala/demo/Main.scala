@@ -15,16 +15,16 @@ object Filters extends Enumeration {
 case class TodoItem(content: String, complete: Boolean = false)
 
 
-trait ToEvent
+trait ToDoEvent
 
-case class Add(content: String) extends ToEvent
+case class Add(content: String) extends ToDoEvent
 
-case class Delete(item: TodoItem) extends ToEvent
+case class Delete(item: TodoItem) extends ToDoEvent
 
-case class ChangeState(item: TodoItem) extends ToEvent
+case class ChangeState(item: TodoItem) extends ToDoEvent
 
 object Main {
-  def renderItem(todoItem: TodoItem)(implicit channel: EventChannel[ToEvent]): Node = {
+  def renderItem(todoItem: TodoItem)(implicit channel: EventChannel[ToDoEvent]): Node = {
     <.li(
       <.div(
         <.input(^.`class` := "toggle", ^.`type` := "checkbox", ^.checked := todoItem.complete,
@@ -35,7 +35,7 @@ object Main {
     )
   }
 
-  def renderItems(items: Seq[TodoItem])(implicit channel: EventChannel[ToEvent]): Node = <.ul(^.`class` := "todo-list")(items.map(renderItem): _*)
+  def renderItems(items: Seq[TodoItem])(implicit channel: EventChannel[ToDoEvent]): Node = <.ul(^.`class` := "todo-list")(items.map(renderItem): _*)
 
 
   def renderFilter(current: Filters.Filter, $: StateMod[Filters.Filter]) =
@@ -47,7 +47,7 @@ object Main {
       }): _*)
 
 
-  def renderInput(str: String, $: StateMod[String])(implicit channel: EventChannel[ToEvent]): Node =
+  def renderInput(str: String, $: StateMod[String])(implicit channel: EventChannel[ToDoEvent]): Node =
     <.input(^.placeholder := "What needs to be done?", ^.value := str,
       ^.onChange := ~>($),
       ^.onKeyDown := keyCode flatMap { code =>
@@ -68,7 +68,7 @@ object Main {
 
     val inputValue = Data.state("")
 
-    implicit val channel = new EventChannel[ToEvent]({
+    implicit val channel = new EventChannel[ToDoEvent]({
       case Add(str) => allItems.set(allItems.get :+ TodoItem(str))
       case ChangeState(item) =>
         allItems.updateItem(item, i => i.copy(complete = !i.complete))
