@@ -78,7 +78,7 @@ object Main {
     Comp.renderIntoDom(
       <.div(
         Comp.renderS(inputValue)(renderInput),
-        Comp.render(showItems)(renderItems),
+        Comp.render(showItems, "Items")(renderItems),
         Comp.renderS(filter)(renderFilter)
       ),
       dom.document.getElementById("app-content"))

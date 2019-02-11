@@ -9,7 +9,7 @@ import scala.scalajs.js.ThisFunction0
 
 private[react] object NativeBridge {
   def createElement[A](renderFn: A => VDom.Node,
-                       componentName: Option[String] = None,
+                       componentName: Option[String],
                        mountAware: Option[MountAware[A]] = None
                       ): Native.ReactElement = {
 

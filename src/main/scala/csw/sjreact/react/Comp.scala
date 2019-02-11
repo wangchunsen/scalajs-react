@@ -8,14 +8,14 @@ import org.scalajs.dom.Element
 
 
 object Comp {
-  def renderS[S](state: State[S], name: Option[String] = None)
+  def renderS[S](state: State[S], name: CompName= CompName.empty)
                 (renderFn: (S, StateMod[S]) => VDom.Node): RenderAble = {
     val stateMode: StateMod[S] = newValue => state.set(newValue)
     render[S](state, name)(s => renderFn(s, stateMode))
   }
 
 
-  def render[S](_var: Data[S], name: Option[String] = None)
+  def render[S](_var: Data[S], name: CompName = CompName.empty)
                (renderFn: S => VDom.Node): RenderAble = {
     val mountAware: MountAware[S] = new MountAware[S] {
       var cancelWatcher: Option[CancelAble] = None
@@ -31,7 +31,7 @@ object Comp {
     }
     val element = NativeBridge.createElement(
       renderFn = renderFn,
-      componentName = name,
+      componentName = name.nameStr,
       mountAware = Some(mountAware)
     )
     RenderAbleImp(element)

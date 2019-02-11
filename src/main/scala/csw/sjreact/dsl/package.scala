@@ -19,7 +19,4 @@ package object dsl {
   implicit def node2Element(node: VDom.Node): RenderAble = Comp.static(node)
 
   implicit def renderAbleNode(component: RenderAble): RenderAbleNode = RenderAbleNode(component)
-
-  implicit def toOption[T](value: T): Option[T] = Option(value)
-
 }
