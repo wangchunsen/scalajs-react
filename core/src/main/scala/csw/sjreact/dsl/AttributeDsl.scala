@@ -14,6 +14,8 @@ trait AttributeDsl {
   val placeholder = attr("placeholder")
   val checked = bool("checked")
 
+  val style = obj("style")
+
   val onClick = action("onClick")
   val onChange = action("onChange")
   val onSubmit = action("onSubmit")

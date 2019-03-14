@@ -13,6 +13,8 @@ object VDom {
 
   sealed trait Attribute extends VDom
 
+  object EmptyNode extends Node
+
   case class Text(text: String) extends Node
 
   case class ValueAttribute(key: String, value: Any) extends Attribute

@@ -1,24 +1,36 @@
+import org.scalajs.core.tools.linker.backend.OutputMode.ECMAScript6
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.npmDependencies
 
-
-name := "scalajs-react"
-
-version := "0.1"
-
-scalaVersion := "2.12.6"
-
-
-enablePlugins(ScalaJSPlugin)
-enablePlugins(ScalaJSBundlerPlugin)
-//scalaJSOutputMode := ECMAScript6
-
-scalaJSUseMainModuleInitializer := true
-
-libraryDependencies ++= Seq(
-  "org.scala-js" %%% "scalajs-dom" % "0.9.2"
+val commonSettign = Seq(
+  organization := "csw",
+  version := "0.1",
+  scalaVersion := "2.12.6"
 )
 
 
-npmDependencies in Compile ++= Seq(
-  "create-react-class" -> "^15.5.1",
-  "react" -> "16.5.1",
-  "react-dom" -> "16.5.1")
+
+lazy val core = project.in(file("core"))
+  .settings(commonSettign: _*)
+  .enablePlugins(ScalaJSPlugin)
+  .settings(
+    name := "scalajs-react",
+    libraryDependencies ++= Seq(
+      "org.scala-js" %%% "scalajs-dom" % "0.9.2"
+    )
+  )
+
+
+lazy val example = project.in(file("example"))
+  .dependsOn(core)
+  .settings(commonSettign: _*)
+  .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+  .settings(
+    name := "scalajs-react-example",
+    scalaJSUseMainModuleInitializer := true,
+    scalaJSOutputMode := ECMAScript6,
+
+    npmDependencies in Compile ++= Seq(
+      "create-react-class" -> "^15.5.1",
+      "react" -> "16.5.1",
+      "react-dom" -> "16.5.1")
+  )

@@ -11,6 +11,7 @@ private[react] object Native {
   @JSImport("react-dom", JSImport.Namespace)
   object ReactDOM extends js.Object {
     def render(element: ReactElement, node: dom.Node): js.Any = js.native
+    def unmountComponentAtNode(node:dom.Node):js.Any = js.native
   }
 
   @js.native
@@ -18,6 +19,7 @@ private[react] object Native {
     val state: Wrapper[T] = js.native
 
     def setState(state: Wrapper[T]): Unit = js.native
+    def setState(state: Wrapper[T], callback:js.Function0[Any]):Unit = js.native
   }
 
   @js.native

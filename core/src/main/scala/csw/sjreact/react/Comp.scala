@@ -2,31 +2,28 @@ package csw.sjreact.react
 
 import csw.sjreact.dsl.VDom
 import csw.sjreact.react.Native.ReactDOM
-import csw.sjreact.util.CancelAble
-import csw.sjreact.{State, StateMod, Data}
+import csw.sjreact.{State, StateMod, Var, WatchScope}
 import org.scalajs.dom.Element
 
 
 object Comp {
-  def renderS[S](state: State[S], name: CompName= CompName.empty)
+  def renderS[S](state: State[S], name: CompName = CompName.empty)
                 (renderFn: (S, StateMod[S]) => VDom.Node): RenderAble = {
     val stateMode: StateMod[S] = newValue => state.set(newValue)
     render[S](state, name)(s => renderFn(s, stateMode))
   }
 
 
-  def render[S](_var: Data[S], name: CompName = CompName.empty)
+  def render[S](_var: Var[S], name: CompName = CompName.empty)
                (renderFn: S => VDom.Node): RenderAble = {
-    val mountAware: MountAware[S] = new MountAware[S] {
-      var cancelWatcher: Option[CancelAble] = None
+    val mountAware: MountAware[S] = new MountAware[S] with WatchScope {
 
       override def didMount(native: Native.ReactComp[S]): Unit = {
-        cancelWatcher = Some(Data.watch(_var)(value => setStateValue(native, value)))
-        setStateValue(native, _var.get)
+        Var.onChange[S](_var, value => setStateValue(native, value))
       }
 
       override def willUnmount(native: Native.ReactComp[S]): Unit = {
-        cancelWatcher.foreach(_.cancel())
+        this.cancelAllWatching()
       }
     }
     val element = NativeBridge.createElement(
@@ -36,8 +33,6 @@ object Comp {
     )
     RenderAbleImp(element)
   }
-
-  def static(node: VDom.Node): RenderAble = RenderAbleImp(NativeBridge.node2Element(node))
 
   def renderIntoDom(renderAble: RenderAble, container: Element): Unit = renderAble match {
     case RenderAbleImp(element) => ReactDOM.render(element, container)

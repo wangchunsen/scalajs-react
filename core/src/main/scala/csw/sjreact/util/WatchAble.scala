@@ -10,9 +10,17 @@ trait WatchAble[T] {
     () => removeWatcher(watcher)
   }
 
-  def notifyWatchers(value: T): Unit = watchers.foreach { listener =>
+  def notifyAllWatchers(value: T): Unit = watchers.foreach { watcher =>
     try {
-      listener(value)
+      watcher(value)
+    } catch {
+      case e: Exception => println(e)
+    }
+  }
+
+  def notifyOne(watcher: Watcher, value: T): Unit = {
+    try {
+      watcher(value)
     } catch {
       case e: Exception => println(e)
     }
