@@ -1,4 +1,4 @@
-import org.scalajs.core.tools.linker.backend.OutputMode.ECMAScript6
+import org.scalajs.core.tools.linker.backend.OutputMode
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.npmDependencies
 
 val commonSettign = Seq(
@@ -15,8 +15,10 @@ lazy val core = project.in(file("core"))
   .settings(
     name := "scalajs-react",
     libraryDependencies ++= Seq(
-      "org.scala-js" %%% "scalajs-dom" % "0.9.2"
-    )
+      "org.scala-js" %%% "scalajs-dom" % "0.9.2",
+      "com.lihaoyi" %%% "utest" % "0.6.6" % "test"
+    ),
+    testFrameworks += new TestFramework("utest.runner.Framework")
   )
 
 
@@ -27,7 +29,8 @@ lazy val example = project.in(file("example"))
   .settings(
     name := "scalajs-react-example",
     scalaJSUseMainModuleInitializer := true,
-    scalaJSOutputMode := ECMAScript6,
+    useYarn := true,
+    scalaJSOutputMode := OutputMode.ECMAScript51,
 
     npmDependencies in Compile ++= Seq(
       "create-react-class" -> "^15.5.1",

@@ -1,30 +1,40 @@
 package csw.sjreact.util
 
+import csw.sjreact.util.Watcher.CancelAware
+
 
 trait WatchAble[T] {
-  type Watcher = T => Any
-  private var watchers: Seq[Watcher] = Nil
+  private var watchers: Seq[Watcher[T]] = Seq.empty
 
-  def addWatcher(watcher: Watcher): CancelAble = {
+  def addWatcher(watcher: Watcher[T]): CancelAble = {
     watchers = watchers :+ watcher
     () => removeWatcher(watcher)
   }
 
-  def notifyAllWatchers(value: T): Unit = watchers.foreach { watcher =>
+  def notifyAllWatchers(value: T): Unit = {
+    watchers.foreach { watcher =>
+      try {
+        watcher.notified(value)
+      } catch {
+        case e: Exception => println(e)
+      }
+    }
+  }
+
+  def notifyOne(watcher: Watcher[T], value: T): Unit = {
     try {
-      watcher(value)
+      watcher.notified(value)
     } catch {
       case e: Exception => println(e)
     }
   }
 
-  def notifyOne(watcher: Watcher, value: T): Unit = {
-    try {
-      watcher(value)
-    } catch {
-      case e: Exception => println(e)
+  private def removeWatcher(watcher: Watcher[T]): Unit = {
+    watchers = watchers.filterNot(_ eq watcher)
+
+    watcher match {
+      case a: CancelAware => a.canceled()
+      case _ =>
     }
   }
-
-  private def removeWatcher(watcher: Watcher): Unit = watchers = watchers.filterNot(watcher eq _)
 }

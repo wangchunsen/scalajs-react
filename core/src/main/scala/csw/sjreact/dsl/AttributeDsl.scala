@@ -2,6 +2,7 @@ package csw.sjreact.dsl
 
 
 trait AttributeDsl {
+
   import AttrKey._
 
   val name = attr("name")
@@ -20,4 +21,6 @@ trait AttributeDsl {
   val onChange = action("onChange")
   val onSubmit = action("onSubmit")
   val onKeyDown = action("onKeyDown")
+
+  def data(dataName: String) = AttrKey.data(dataName)
 }

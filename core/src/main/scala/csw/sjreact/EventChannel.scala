@@ -1,28 +1,26 @@
 package csw.sjreact
 
-import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 
-class EventChannel[-E](processor: PartialFunction[E, Any]) {
+trait EventChannel[-E] {
 
-  import scala.scalajs.js.timers._
-
-  private[this] val events = ArrayBuffer.empty[E]
+  def processor: PartialFunction[E, Any]
 
   private def processEvent[E1 <: E](e: E1): Unit = {
     processor.applyOrElse[E1, Any](e, e => println(e))
   }
 
   def fireEvent[E1 <: E](event: E1, async: Boolean = true): Unit =
-    if (async) {
-      //if this event queue is not empty, there must be a pending timeout callback
-      if (events.isEmpty) {
-        setTimeout(0) {
-          val eventsQueue = this.events.toList
-          this.events.clear()
-          eventsQueue.foreach(processEvent)
-        }
-      }
-      this.events.append(event)
-    } else processEvent(event)
+    if (async) Future {
+      processEvent(event)
+    }
+    else processEvent(event)
+}
+
+object EventChannel {
+  def apply[E](_processor: PartialFunction[E, Any]) = new EventChannel[E] {
+    override def processor: PartialFunction[E, Any] = processor
+  }
 }

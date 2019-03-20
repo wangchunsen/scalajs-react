@@ -4,24 +4,148 @@
     <meta charset="UTF-8">
     <title>Hello World!</title>
     <style>
-        #footer >div{
-           display: inline-block;
+        #footer > div {
+            display: inline-block;
             margin-right: 20px;
         }
+
         #counter {
             font-weight: 300;
             font-size: 14px;
         }
-        #header button{
+
+        #header button {
             font-weight: 300;
         }
-        #header button.active{
+
+        #header button.active {
             font-weight: bold;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: fit-content;
+            width: -moz-fit-content;
+        }
+
+        .ct {
+            height: 40px;
+            background-color: darkgoldenrod;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .indicator .qc{
+            margin-right: 20px;
+            border: none;
+            position: static;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .ct.white .qc.black {
+            visibility: hidden;
+        }
+
+        .ct.black .qc.white {
+            visibility: hidden;
+        }
+
+        .qipan {
+            display: inline-block;
+            background-color: darkgoldenrod;
+            position: relative;
+        }
+
+        .ct.disable + .qipan:before {
+            content: attr(data-winner);
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            cursor: not-allowed;
+            font-size: 60px;
+            font-weight: bold;
+            text-align: center;
+            color: red;
+        }
+
+        .qipan .line {
+            height: 40px;
+            margin-top: -1px;
+        }
+
+
+        .gezi {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            border: 1px solid;
+            margin-left: -1px;
+            box-sizing: border-box;
+            position: relative;
+            user-select: none;
+            vertical-align: top;
+        }
+
+        .qc {
+            width: 30px;
+            height: 30px;
+            display: block;
+            position: absolute;
+            bottom: -15px;
+            left: -15px;
+            box-sizing: border-box;
+            cursor: pointer;
+            z-index: 5;
+            border-radius: 15px;
+        }
+
+        .qc.empty:hover {
+            border: solid 2px;
+        }
+
+        .qc.white {
+            background: white;
+            border-radius: 15px;
+        }
+        .qc.black {
+            background: black;
+            border-radius: 15px;
+        }
+        .qc.win{
+            animation: blink 1s infinite;
+        }
+
+        .ct.white + .qipan .qc:hover {
+            border-color: white;
+        }
+
+        .ct.black + .qipan .qc:hover{
+            border-color: black;
+        }
+
+
+        @keyframes blink {
+            0% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 100;
+            }
+            100% {
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="app-content"></div>
+<div id="app-content"></div>
 </body>
 <script type="text/javascript"
         src="/scalajs-react/example/target/scala-2.12/scalajs-bundler/main/scalajs-react-example-fastopt-bundle.js"></script>

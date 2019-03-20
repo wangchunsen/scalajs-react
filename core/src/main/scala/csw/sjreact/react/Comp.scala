@@ -4,7 +4,9 @@ import csw.sjreact.dsl.VDom
 import csw.sjreact.react.Native.ReactDOM
 import csw.sjreact.{State, StateMod, Var, WatchScope}
 import org.scalajs.dom.Element
+import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.Future
 
 object Comp {
   def renderS[S](state: State[S], name: CompName = CompName.empty)
@@ -14,18 +16,24 @@ object Comp {
   }
 
 
-  def render[S](_var: Var[S], name: CompName = CompName.empty)
+  def render[S](_var: Var[S], name: CompName = CompName.empty, debug: Boolean = false)
                (renderFn: S => VDom.Node): RenderAble = {
     val mountAware: MountAware[S] = new MountAware[S] with WatchScope {
+      private var isMounted = false
 
       override def didMount(native: Native.ReactComp[S]): Unit = {
-        Var.onChange[S](_var, value => setStateValue(native, value))
+        isMounted = true
+        Var.onChange[S](_var, value => if (isMounted) Future {
+          if (isMounted) setStateValue(native, value)
+        })
       }
 
       override def willUnmount(native: Native.ReactComp[S]): Unit = {
         this.cancelAllWatching()
+        isMounted = false
       }
     }
+
     val element = NativeBridge.createElement(
       renderFn = renderFn,
       componentName = name.nameStr,

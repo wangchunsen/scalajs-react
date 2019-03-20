@@ -81,7 +81,14 @@ private[react] object NativeBridge {
   def attributes2JsObj(attributes: Seq[Attribute]): js.Object = {
     val obj = js.Dynamic.literal()
     attributes.foreach {
-      case ValueAttribute(key, value) => obj.updateDynamic(key)(value.asInstanceOf[js.Any])
+      case ValueAttribute(key, value) =>
+        val previous = obj.selectDynamic(key)
+        if(previous.isInstanceOf[String] && value.isInstanceOf[String]){
+          obj.updateDynamic(key)(previous.toString + " " +  value)
+        }else {
+          obj.updateDynamic(key)(value.asInstanceOf[js.Any])
+        }
+
       case ActionAttribute(key, fun: Function[_, _]) => obj.updateDynamic(key)(fun: js.Function1[_, _])
       case EmptyAttribute => //do nothing
     }

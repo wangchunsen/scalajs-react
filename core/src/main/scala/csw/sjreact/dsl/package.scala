@@ -4,6 +4,7 @@ import csw.sjreact.dsl.VDom.{EmptyNode, RenderAbleNode}
 import csw.sjreact.react.{RenderAble, View}
 
 import scala.language.implicitConversions
+import scala.scalajs.js
 
 
 package object dsl {
@@ -26,4 +27,6 @@ package object dsl {
     case Some(n) => n
     case _ => EmptyNode
   }
+
+  implicit def mapToDictionary(map: Map[String, String]): js.Dictionary[String] = js.Dictionary(map.toSeq: _*)
 }

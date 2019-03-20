@@ -3,7 +3,7 @@ package csw
 import csw.sjreact.dsl.VDom
 import csw.sjreact.react.View
 
-import scala.scalajs.js
+import scala.language.implicitConversions
 
 package object sjreact {
   type StateMod[T] = T => Unit
@@ -15,6 +15,4 @@ package object sjreact {
       override def render: VDom.Element = fun(this.manager)
     }
   }
-
-  implicit def mapToDictionary(map: Map[String, String]): js.Dictionary[String] = js.Dictionary(map.toSeq: _*)
 }

@@ -10,7 +10,7 @@ case class AttrKey[T](attrName: String) {
     case _ => ValueAttribute(attrName, value)
   }
 
-  def :=? (optValue: Option[T]):Attribute =  optValue match {
+  def :=?(optValue: Option[T]): Attribute = optValue match {
     case None => EmptyAttribute
     case Some(value) => this.:=(value)
   }
@@ -23,5 +23,7 @@ object AttrKey {
 
   def bool(name: String): AttrKey[Boolean] = AttrKey(name)
 
-  def obj(name:String):AttrKey[js.Dictionary[String]] = AttrKey(name)
+  def obj(name: String): AttrKey[js.Dictionary[String]] = AttrKey(name)
+
+  def data(dataName: String): AttrKey[String] = AttrKey("data-" + dataName)
 }
