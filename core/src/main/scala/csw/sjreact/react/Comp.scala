@@ -23,7 +23,7 @@ object Comp {
 
       override def didMount(native: Native.ReactComp[S]): Unit = {
         isMounted = true
-        Var.onChange[S](_var, value => if (isMounted) Future {
+        Var.watch[S](_var, value => if (isMounted) Future {
           if (isMounted) setStateValue(native, value)
         })
       }

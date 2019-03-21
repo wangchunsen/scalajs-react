@@ -174,13 +174,13 @@ object Var {
     Listening changes of o var
     Specially, the watcher will be noticed immediately after attach
    */
-  def onChange[T](var_ : Var[T], watcher: Watcher[T])(implicit manager: WatchScope): CancelAble =
+  def watch[T](var_ : Var[T], watcher: Watcher[T])(implicit manager: WatchScope): CancelAble =
     var_.asInstanceOf[PrivateVar[T]].addWatcher(watcher)
 
   implicit class VarOps[T](val self: Var[T]) extends AnyVal {
     def map[R](mapper: T => R)(implicit watchManager: WatchScope): Var[R] = VarImp(self, mapper)
 
-    def onChange(watcher: Watcher[T])(implicit manager: WatchScope): CancelAble = Var.onChange(self, watcher)
+    def onChange(watcher: Watcher[T])(implicit manager: WatchScope): CancelAble = Var.watch(self, watcher)
 
     def ~[V, R](var_ : Var[V])(implicit combiner: Combiner[T, V, R]): Var[R] = new ZippedVar(self, var_)
 

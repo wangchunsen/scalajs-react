@@ -11,7 +11,7 @@ object VarTest extends TestSuite {
         val state = Var.state[String]("123")
 
         var symbol = ""
-        Var.onChange[String](state, str => {
+        Var.watch[String](state, str => {
           symbol = str
         })
 
@@ -23,7 +23,7 @@ object VarTest extends TestSuite {
         val state = Var.state[String]("123")
 
         var symbol = ""
-        val watching = Var.onChange[String](state, str => {
+        val watching = Var.watch[String](state, str => {
           symbol = str
         })
 
@@ -41,7 +41,7 @@ object VarTest extends TestSuite {
         val mapped = st map (_.length)
 
         var capture = 0
-        Var.onChange[Int](mapped, int =>{
+        Var.watch[Int](mapped, int =>{
           capture = int
         })
 
@@ -55,7 +55,7 @@ object VarTest extends TestSuite {
         val nestVar = stringLength map (_ + 1)
 
         var notifyCounter = 0
-        Var.onChange[Int](nestVar, int =>{
+        Var.watch[Int](nestVar, int =>{
           notifyCounter += 1
         })
 
@@ -78,7 +78,7 @@ object VarTest extends TestSuite {
         val st2 = state(123)
 
         var counter = 0
-        Var.onChange[(String, Int)](st1 ~ st2, tup =>{
+        Var.watch[(String, Int)](st1 ~ st2, tup =>{
          counter += 1
         })
         assert(counter == 1)
